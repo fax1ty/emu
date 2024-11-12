@@ -1,4 +1,4 @@
-import { execute } from "@/services/execute";
+import { adb, emulator } from "@/services/execute";
 import {
   OnlineEmulator,
   OnlineEmulatorState,
@@ -6,12 +6,9 @@ import {
 } from "@/types/emulator";
 
 export const getAllEmulators = async () => {
-  const output = await execute("cmd.exe", [
-    "/c",
-    "%ANDROID_HOME%/emulator/emulator.exe -list-avds",
-  ]);
+  const output = await emulator("-list-avds");
   return output
-    .split("\r\n")
+    .split("\n")
     .map((v) => v.trim())
     .filter((v) => {
       if (!v) return false;
@@ -21,11 +18,8 @@ export const getAllEmulators = async () => {
 };
 
 export const getEmulatorName = async (id: string) => {
-  const output = await execute("cmd.exe", [
-    "/c",
-    `%ANDROID_HOME%/platform-tools/adb.exe -s ${id} emu avd name`,
-  ]);
-  return output.split("\r\n").map((v) => v.trim())[0];
+  const output = await adb(`-s ${id} emu avd name`);
+  return output.split("\n").map((v) => v.trim())[0];
 };
 
 export const getEmulatorState = (
@@ -36,11 +30,8 @@ export const getEmulatorState = (
 };
 
 export const getEmulatorProps = async (id: string) => {
-  const output = await execute("cmd.exe", [
-    "/c",
-    `%ANDROID_HOME%/platform-tools/adb.exe -s ${id} shell getprop`,
-  ]);
-  const kv = output.split("\r\n").map((v) => {
+  const output = await adb(`-s ${id} shell getprop`);
+  const kv = output.split("\n").map((v) => {
     const [key, value] = v.replace(/(\[|\])/gm, "").split(": ");
     return [key, value];
   });
@@ -48,11 +39,8 @@ export const getEmulatorProps = async (id: string) => {
 };
 
 export const getEmulatorFeatures = async (id: string) => {
-  const output = await execute("cmd.exe", [
-    "/c",
-    `%ANDROID_HOME%/platform-tools/adb.exe -s ${id} shell pm list features`,
-  ]);
-  return output.split("\r\n");
+  const output = await adb(`-s ${id} shell pm list features`);
+  return output.split("\n");
 };
 
 export const getEmulatorType = (features: string[]): OnlineEmulatorType => {
@@ -63,12 +51,9 @@ export const getEmulatorType = (features: string[]): OnlineEmulatorType => {
 };
 
 export const getOnlineEmulators = async () => {
-  const output = await execute("cmd.exe", [
-    "/c",
-    "%ANDROID_HOME%/platform-tools/adb.exe devices -l",
-  ]);
+  const output = await adb("devices -l");
   const rows = output
-    .split("\r\n")
+    .split("\n")
     .map((v) => v.trim())
     .filter((v) => {
       if (!v) return false;
@@ -116,15 +101,9 @@ export const startEmulator = async (name: string, cold = false) => {
 
   if (cold) args.push("-no-snapshot-load");
 
-  await execute("cmd.exe", [
-    "/c",
-    `%ANDROID_HOME%/emulator/emulator.exe ` + args.join(" "),
-  ]);
+  await emulator(args.join(" "));
 };
 
 export const stopEmulator = async (id: string) => {
-  await execute("cmd.exe", [
-    "/c",
-    `%ANDROID_HOME%/platform-tools/adb.exe -s ${id} emu kill`,
-  ]);
+  await adb(`-s ${id} emu kill`);
 };

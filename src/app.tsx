@@ -31,8 +31,6 @@ function App() {
     await window.close();
   };
 
-  if (!emulators) return null;
-
   return (
     <>
       <nav
@@ -62,20 +60,22 @@ function App() {
       </nav>
 
       <main className="flex-1 px-4 pb-2 py-1">
-        <ul>
-          {Object.values(emulators).map((emulator, i) => (
-            <EmulatorListItem
-              key={i}
-              emulator={emulator}
-              onOptionsButtonPressed={(event) => {
-                setSelectedEmulator(emulator.name);
-                show({
-                  event,
-                });
-              }}
-            />
-          ))}
-        </ul>
+        {emulators && (
+          <ul>
+            {Object.values(emulators).map((emulator, i) => (
+              <EmulatorListItem
+                key={i}
+                emulator={emulator}
+                onOptionsButtonPressed={(event) => {
+                  setSelectedEmulator(emulator.name);
+                  show({
+                    event,
+                  });
+                }}
+              />
+            ))}
+          </ul>
+        )}
       </main>
 
       <Menu
@@ -87,7 +87,7 @@ function App() {
         <Item
           disabled={
             !selectedEmulator ||
-            emulators[selectedEmulator]?.state !== "offline"
+            emulators?.[selectedEmulator]?.state !== "offline"
           }
           onClick={async () => {
             if (!selectedEmulator) return;
