@@ -16,9 +16,15 @@
           "name": "cmd.exe",
           "cmd": "cmd.exe",
           "args": true
+        },
+        {
+          "name": "sh",
+          "cmd": "sh",
+          "args": true
         }
       ]
     },
-    "process:default"
+    "process:default",
+    "os:default"
   ]
 }
