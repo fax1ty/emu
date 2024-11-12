@@ -39,7 +39,7 @@ export const getEmulatorProps = async (id: string) => {
 };
 
 export const getEmulatorFeatures = async (id: string) => {
-  const output = await adb("shell pm list features");
+  const output = await adb(`-s ${id} shell pm list features`);
   return output.split("\n");
 };
 

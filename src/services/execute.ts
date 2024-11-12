@@ -6,34 +6,32 @@ const getAndroidHomePrefix = () => {
 
   switch (currentPlatfrom) {
     case "windows":
-      return "%ANDROID_HOME";
+      return "%ANDROID_HOME%";
 
     default:
       return "$ANDROID_HOME";
   }
 };
 
-const makeCommand = (executable: string, ...args: string[]) => {
+const makeCommand = (executable: string, args: string) => {
   const currentPlatfrom = platform();
 
   switch (currentPlatfrom) {
     case "windows":
-      return Command.create("cmd.exe", [
-        "/c",
-        executable + ".exe " + args.join(" "),
-      ]);
+      const command = ["/c", `${executable}.exe ${args}`];
+      return Command.create("cmd.exe", command);
 
     default:
-      return Command.create("sh", ["-c", executable + " " + args.join(" ")]);
+      return Command.create("sh", ["-c", `${executable} ${args}`]);
   }
 };
 
 export const execute = async (
   executable: string,
-  args: string[] = [],
+  args: string,
   options?: SpawnOptions & { timeout?: number; verbose?: boolean }
 ) => {
-  const cmd = makeCommand(executable, ...args);
+  const cmd = makeCommand(executable, args);
   cmd.stdout.on("data", (v) => {
     if (options?.verbose) console.info(executable, args, v);
   });
@@ -49,10 +47,10 @@ export const execute = async (
 
 export const emulator = (command: string) => {
   const prefix = getAndroidHomePrefix();
-  return execute(`${prefix}/emulator/emulator`, [command]);
+  return execute(`${prefix}/emulator/emulator`, command);
 };
 
 export const adb = (command: string) => {
   const prefix = getAndroidHomePrefix();
-  return execute(`${prefix}/platform-tools/adb`, [command]);
+  return execute(`${prefix}/platform-tools/adb`, command);
 };
