@@ -10,22 +10,21 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@fontsource-variable/inter": "^5.1.0",
+    "@fontsource-variable/martian-mono": "^5.1.0",
+    "@fontsource/inter": "^5.1.0",
+    "@fontsource/martian-mono": "^5.1.0",
     "@phosphor-icons/react": "^2.1.7",
-    "@radix-ui/react-alert-dialog": "^1.1.2",
-    "@radix-ui/react-slot": "^1.1.0",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-os": "~2",
     "@tauri-apps/plugin-process": "~2",
     "@tauri-apps/plugin-shell": "~2",
-    "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
-    "lucide-react": "^0.456.0",
     "react": "^18.2.0",
-    "react-contexify": "^6.0.0",
     "react-dom": "^18.2.0",
     "swr": "^2.2.5",
     "tailwind-merge": "^2.5.4",
-    "tailwindcss-animate": "^1.0.7",
+    "vaul": "^1.1.1",
     "zustand": "^5.0.1"
   },
   "devDependencies": {

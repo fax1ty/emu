@@ -1,70 +1,30 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-    darkMode: ["class"],
-    content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  darkMode: ["class"],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-  	extend: {
-  		colors: {
-  			shark: {
-  				'50': '#f5f5f6',
-  				'100': '#e5e6e8',
-  				'200': '#ced0d3',
-  				'300': '#abafb5',
-  				'400': '#81868f',
-  				'500': '#666b74',
-  				'600': '#575b63',
-  				'700': '#4b4e53',
-  				'800': '#424448',
-  				'900': '#3a3b3f',
-  				'950': '#2c2d31'
-  			},
-  			background: 'hsl(var(--background))',
-  			foreground: 'hsl(var(--foreground))',
-  			card: {
-  				DEFAULT: 'hsl(var(--card))',
-  				foreground: 'hsl(var(--card-foreground))'
-  			},
-  			popover: {
-  				DEFAULT: 'hsl(var(--popover))',
-  				foreground: 'hsl(var(--popover-foreground))'
-  			},
-  			primary: {
-  				DEFAULT: 'hsl(var(--primary))',
-  				foreground: 'hsl(var(--primary-foreground))'
-  			},
-  			secondary: {
-  				DEFAULT: 'hsl(var(--secondary))',
-  				foreground: 'hsl(var(--secondary-foreground))'
-  			},
-  			muted: {
-  				DEFAULT: 'hsl(var(--muted))',
-  				foreground: 'hsl(var(--muted-foreground))'
-  			},
-  			accent: {
-  				DEFAULT: 'hsl(var(--accent))',
-  				foreground: 'hsl(var(--accent-foreground))'
-  			},
-  			destructive: {
-  				DEFAULT: 'hsl(var(--destructive))',
-  				foreground: 'hsl(var(--destructive-foreground))'
-  			},
-  			border: 'hsl(var(--border))',
-  			input: 'hsl(var(--input))',
-  			ring: 'hsl(var(--ring))',
-  			chart: {
-  				'1': 'hsl(var(--chart-1))',
-  				'2': 'hsl(var(--chart-2))',
-  				'3': 'hsl(var(--chart-3))',
-  				'4': 'hsl(var(--chart-4))',
-  				'5': 'hsl(var(--chart-5))'
-  			}
-  		},
-  		borderRadius: {
-  			lg: 'var(--radius)',
-  			md: 'calc(var(--radius) - 2px)',
-  			sm: 'calc(var(--radius) - 4px)'
-  		}
-  	}
+    fontFamily: {
+      secondary: ["Martian Mono Variable", "monospace"],
+      primary: ["Inter Variable", "sans-serif"],
+    },
+    colors: {
+      black: "#000000",
+      blue: {
+        50: "#f9fcfe",
+        200: "#d0e7fb",
+        300: "#aad4f8",
+        400: "#83c0f5",
+        700: "#316e9f",
+        800: "#214d72",
+        900: "#123048",
+      },
+      red: { 400: "#f2a4a2" },
+      amber: { 400: "#e4b073" },
+      teal: { 400: "#86caa0" },
+      mauve: { 50: "#fdfafe" },
+      cyan: { 200: "#ccebe3", 800: "#0d5449" },
+      purple: { 200: "#e7e0fc", 800: "#514173" },
+    },
+    extend: { fontSize: { xxs: "10px" } },
   },
-  plugins: [require("tailwindcss-animate")],
 };
