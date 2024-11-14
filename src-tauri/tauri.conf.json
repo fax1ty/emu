@@ -22,8 +22,7 @@
         "height": 500,
         "visible": false,
         "focus": false,
-        "skipTaskbar": true,
-        "alwaysOnTop": true
+        "skipTaskbar": true
       }
     ],
     "security": {

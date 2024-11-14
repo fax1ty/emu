@@ -1,11 +1,13 @@
 import { useEmulators } from "@/queries/emulator";
 import { Minus, Plus, X } from "@phosphor-icons/react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { EmulatorListItem } from "@/components/emulator-list-item";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useNoContext } from "@/hooks/no-context";
-import { AndroidHomeModal } from "./components/modals/android-home";
-import { EmulatorOptionsModal } from "./components/modals/emulator-options";
+import { AndroidHomeModal } from "@/components/modals/android-home";
+import { EmulatorOptionsModal } from "@/components/modals/emulator-options";
+import { cn } from "@/lib/utils";
+import { platform } from "@tauri-apps/plugin-os";
 
 import "./app.css";
 
@@ -15,6 +17,8 @@ function App() {
   const { data: emulators } = useEmulators();
 
   const [selectedEmulator, setSelectedEmulator] = useState<string | null>(null);
+
+  const currentPlatfrom = useMemo(() => platform(), []);
 
   const minimize = async () => {
     const window = getCurrentWindow();
@@ -31,7 +35,13 @@ function App() {
   };
 
   return (
-    <>
+    <div
+      className={cn(
+        "w-full h-screen px-3 py-4 rounded-md overflow-hidden bg-black gap-4 flex flex-col",
+        currentPlatfrom === "windows" && "rounded-b-none",
+        currentPlatfrom === "macos" && "rounded-t-none"
+      )}
+    >
       <nav className="bg-blue-300 h-7 flex items-center justify-between pl-2.5 rounded-md overflow-hidden">
         <p className="pointer-events-none font-primary font-semibold text-xs text-blue-700">
           Device Manager
@@ -82,7 +92,7 @@ function App() {
         name={selectedEmulator}
         onClose={onEmulatorOptionsClose}
       />
-    </>
+    </div>
   );
 }
 

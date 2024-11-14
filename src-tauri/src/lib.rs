@@ -2,7 +2,7 @@ use std::env;
 
 use tauri::{
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
-    LogicalPosition, Manager,
+    Manager,
 };
 use tauri_plugin_positioner::{Position, WindowExt};
 
@@ -26,6 +26,12 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .invoke_handler(tauri::generate_handler![get_android_home])
         .setup(|app| {
+            #[cfg(target_os = "windows")]
+            app.get_webview_window("main")
+                .unwrap()
+                .set_always_on_top(true)
+                .unwrap();
+
             app.handle()
                 .plugin(tauri_plugin_positioner::init())
                 .unwrap();
@@ -34,6 +40,7 @@ pub fn run() {
                 .on_tray_icon_event(|tray, event| {
                     tauri_plugin_positioner::on_tray_event(tray.app_handle(), &event);
 
+                    #[cfg(target_os = "windows")]
                     let mut aligned = false;
 
                     match event {
@@ -45,31 +52,30 @@ pub fn run() {
                             let app = tray.app_handle();
 
                             if let Some(window) = app.get_webview_window("main") {
-                                let is_visible = window.is_visible().unwrap();
+                                #[cfg(target_os = "windows")]
+                                {
+                                    if !aligned {
+                                        window.move_window(Position::TrayLeft).unwrap();
+                                        let scale = window.scale_factor().unwrap();
+                                        let pos = window
+                                            .inner_position()
+                                            .unwrap()
+                                            .to_logical::<u32>(scale);
+                                        let target =
+                                            tauri::LogicalPosition::new(pos.x - 30 as u32, pos.y);
+                                        window.set_position(target).unwrap();
 
-                                match is_visible {
-                                    true => {
-                                        window.hide().unwrap();
-                                    }
-                                    false => {
-                                        if !aligned {
-                                            window.move_window(Position::TrayLeft).unwrap();
-                                            let scale = window.scale_factor().unwrap();
-                                            let pos = window
-                                                .inner_position()
-                                                .unwrap()
-                                                .to_logical::<u32>(scale);
-                                            let target =
-                                                LogicalPosition::new(pos.x - 30 as u32, pos.y);
-                                            window.set_position(target).unwrap();
-
-                                            aligned = true;
-                                        }
-
-                                        window.show().unwrap();
-                                        window.set_focus().unwrap();
+                                        aligned = true;
                                     }
                                 }
+
+                                #[cfg(target_os = "macos")]
+                                {
+                                    window.move_window(Position::TrayBottomCenter).unwrap();
+                                }
+
+                                window.show().unwrap();
+                                window.set_focus().unwrap();
                             }
                         }
                         _ => {}

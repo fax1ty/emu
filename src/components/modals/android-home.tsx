@@ -5,6 +5,9 @@ import { Drawer } from "vaul";
 import { SealWarning, SignOut, Skull } from "@phosphor-icons/react";
 import { useAppStore } from "@/stores/app";
 import { mutate } from "swr";
+import { useMemo } from "react";
+import { platform } from "@tauri-apps/plugin-os";
+import { cn } from "@/lib/utils";
 
 export const AndroidHomeModal = () => {
   const isAndroidHomeModalVisible = useModalsStore(
@@ -19,6 +22,8 @@ export const AndroidHomeModal = () => {
   const setDangerModeEnabled = useAppStore(
     (state) => state.setDangerModeEnabled
   );
+
+  const currentPlatfrom = useMemo(() => platform(), []);
 
   const exit = async () => {
     await exitBase();
@@ -41,8 +46,19 @@ export const AndroidHomeModal = () => {
   return (
     <Drawer.Root open={isAndroidHomeModalVisible} dismissible={false}>
       <Drawer.Portal>
-        <Drawer.Overlay className="fixed inset-0 bg-black/40 rounded-md" />
-        <Drawer.Content className="bg-blue-800 flex flex-col rounded-t-[10px] h-fit fixed bottom-0 left-0 right-0 outline-none">
+        <Drawer.Overlay
+          className={cn(
+            "fixed inset-0 bg-black/40 rounded-md",
+            currentPlatfrom === "windows" && "rounded-b-none",
+            currentPlatfrom === "macos" && "rounded-t-none"
+          )}
+        />
+        <Drawer.Content
+          className={cn(
+            "bg-blue-800 flex flex-col rounded-t-[10px] h-fit fixed bottom-0 left-0 right-0 outline-none",
+            currentPlatfrom === "macos" && "rounded-b-md"
+          )}
+        >
           <div className="px-3 pt-2 pb-4 bg-white rounded-t-[10px] flex-1">
             <div
               aria-hidden
