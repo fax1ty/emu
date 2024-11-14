@@ -1,4 +1,7 @@
-use std::env;
+use std::{
+    env,
+    sync::{Arc, Mutex},
+};
 
 use tauri::{
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
@@ -26,6 +29,8 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .invoke_handler(tauri::generate_handler![get_android_home])
         .setup(|app| {
+            let aligned = Arc::new(Mutex::new(false));
+
             #[cfg(target_os = "windows")]
             app.get_webview_window("main")
                 .unwrap()
@@ -37,11 +42,8 @@ pub fn run() {
                 .unwrap();
 
             TrayIconBuilder::new()
-                .on_tray_icon_event(|tray, event| {
+                .on_tray_icon_event(move |tray, event| {
                     tauri_plugin_positioner::on_tray_event(tray.app_handle(), &event);
-
-                    #[cfg(target_os = "windows")]
-                    let mut aligned = false;
 
                     match event {
                         TrayIconEvent::Click {
@@ -54,7 +56,9 @@ pub fn run() {
                             if let Some(window) = app.get_webview_window("main") {
                                 #[cfg(target_os = "windows")]
                                 {
-                                    if !aligned {
+                                    let mut aligned_lock = aligned.lock().unwrap();
+
+                                    if *aligned_lock == false {
                                         window.move_window(Position::TrayLeft).unwrap();
                                         let scale = window.scale_factor().unwrap();
                                         let pos = window
@@ -65,7 +69,7 @@ pub fn run() {
                                             tauri::LogicalPosition::new(pos.x - 30 as u32, pos.y);
                                         window.set_position(target).unwrap();
 
-                                        aligned = true;
+                                        *aligned_lock = true
                                     }
                                 }
 

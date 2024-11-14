@@ -20,9 +20,9 @@ function App() {
 
   const currentPlatfrom = useMemo(() => platform(), []);
 
-  const minimize = async () => {
+  const hide = async () => {
     const window = getCurrentWindow();
-    await window.minimize();
+    await window.hide();
   };
 
   const close = async () => {
@@ -50,7 +50,7 @@ function App() {
         <div className="flex text-blue-700 relative">
           <button
             className="w-7 h-7 hover:bg-blue-50 duration-300 flex items-center justify-center rounded-md rounded-r-none"
-            onClick={minimize}
+            onClick={hide}
           >
             <Minus size={14} weight="bold" />
           </button>
