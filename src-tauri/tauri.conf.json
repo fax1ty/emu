@@ -18,8 +18,11 @@
         "resizable": false,
         "decorations": false,
         "shadow": false,
-        "width": 800,
-        "height": 600
+        "width": 305,
+        "height": 500,
+        "visible": false,
+        "focus": false,
+        "skipTaskbar": true
       }
     ],
     "security": {
