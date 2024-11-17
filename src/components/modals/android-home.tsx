@@ -1,15 +1,19 @@
-import { useModalsStore } from "@/stores/modals";
+import { Trans, useTranslation } from "react-i18next";
+import { SignOut, Skull } from "@phosphor-icons/react";
 import { exit as exitBase } from "@tauri-apps/plugin-process";
 import { open } from "@tauri-apps/plugin-shell";
-import { Drawer } from "vaul";
-import { SealWarning, SignOut, Skull } from "@phosphor-icons/react";
-import { useAppStore } from "@/stores/app";
 import { mutate } from "swr";
-import { useMemo } from "react";
-import { platform } from "@tauri-apps/plugin-os";
-import { cn } from "@/lib/utils";
+import { Drawer } from "vaul";
+
+import { ModalLayout } from "@/components/layouts/modal";
+import { Button } from "@/components/ui/button";
+import { Warning } from "@/components/ui/warning";
+import { useAppStore } from "@/stores/app";
+import { useModalsStore } from "@/stores/modals";
 
 export const AndroidHomeModal = () => {
+  const { t } = useTranslation();
+
   const isAndroidHomeModalVisible = useModalsStore(
     (state) => state.isAndroidHomeModalVisible
   );
@@ -23,7 +27,9 @@ export const AndroidHomeModal = () => {
     (state) => state.setDangerModeEnabled
   );
 
-  const currentPlatfrom = useMemo(() => platform(), []);
+  const onClose = () => {
+    setAndroidHomeModalVisible(false);
+  };
 
   const exit = async () => {
     await exitBase();
@@ -44,83 +50,45 @@ export const AndroidHomeModal = () => {
   };
 
   return (
-    <Drawer.Root open={isAndroidHomeModalVisible} dismissible={false}>
-      <Drawer.Portal>
-        <Drawer.Overlay
-          className={cn(
-            "fixed inset-0 bg-black/40 rounded-md",
-            currentPlatfrom === "windows" && "rounded-b-none",
-            currentPlatfrom === "macos" && "rounded-t-none"
-          )}
+    <ModalLayout
+      onClose={onClose}
+      isOpen={isAndroidHomeModalVisible}
+      dismissible={false}
+    >
+      <Drawer.Title className="mb-2 font-secondary text-sm font-medium text-blue-300">
+        {t("AndroidHomeModal.title")}
+      </Drawer.Title>
+
+      <p className="font-primary text-sm text-blue-200">
+        <Trans
+          i18nKey="AndroidHomeModal.text"
+          components={{
+            1: <Button intent="link" onClick={openAndroidDeveloperPortal} />,
+            2: <Button intent="link" onClick={openStackOverflow} />,
+          }}
         />
-        <Drawer.Content
-          className={cn(
-            "bg-blue-800 flex flex-col rounded-t-[10px] h-fit fixed bottom-0 left-0 right-0 outline-none",
-            currentPlatfrom === "macos" && "rounded-b-md"
-          )}
+      </p>
+
+      {androidHomeModalError && (
+        <Warning>
+          {t("AndroidHomeModal.warning", { error: androidHomeModalError })}
+        </Warning>
+      )}
+
+      <div className="mt-6 flex flex-col gap-2">
+        <Button intent="secondary" onClick={exit}>
+          <span>{t("AndroidHomeModal.buttons.exit")}</span>
+          <SignOut size={18} weight="bold" />
+        </Button>
+
+        <button
+          className="flex h-10 items-center justify-between rounded bg-blue-900 px-3 font-primary text-sm font-semibold text-blue-400 duration-300 hover:opacity-75 active:opacity-65 disabled:opacity-60"
+          onClick={close}
         >
-          <div className="px-3 pt-2 pb-4 bg-white rounded-t-[10px] flex-1">
-            <div
-              aria-hidden
-              className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-blue-200 mb-3"
-            />
-            <div className="max-w-md mx-auto">
-              <Drawer.Title className="font-secondary font-medium text-sm mb-2 text-blue-300">
-                ANDROID_HOME is missing
-              </Drawer.Title>
-
-              <p className="text-gray-600 font-primary text-sm text-blue-200">
-                At this stage, we are unable to automatically locate the
-                necessary libraries. We would like to use your Android Studio
-                installation, but we are unable to find the specified
-                environment variable.
-                <br />
-                <br />
-                You can find a brief description of the variable on the{" "}
-                <button
-                  className="inline-flex underline underline-offset-4 font-semibold hover:opacity-75 active:opacity-65 duration-300 disabled:opacity-60"
-                  onClick={openAndroidDeveloperPortal}
-                >
-                  Android Developer Platform
-                </button>
-                . Or you can try searching for help on{" "}
-                <button
-                  className="inline-flex underline underline-offset-4 font-semibold hover:opacity-75 active:opacity-65 duration-300 disabled:opacity-60"
-                  onClick={openStackOverflow}
-                >
-                  Stack Overflow
-                </button>
-                .
-              </p>
-
-              {androidHomeModalError && (
-                <blockquote className="bg-blue-300 rounded-sm mt-3 px-3 py-2 text-blue-900 text-xs font-secondary flex gap-2">
-                  <SealWarning size={24} weight="fill" />
-                  <p className="flex-1">Error: {androidHomeModalError}</p>
-                </blockquote>
-              )}
-
-              <div className="flex flex-col gap-2 mt-6">
-                <button
-                  className="flex h-10 bg-blue-400 justify-between items-center text-blue-900 font-primary font-semibold text-sm px-3 rounded hover:opacity-75 active:opacity-65 duration-300 disabled:opacity-60"
-                  onClick={exit}
-                >
-                  <span>Play safe. Exit</span>
-                  <SignOut size={18} weight="bold" />
-                </button>
-
-                <button
-                  className="flex h-10 bg-blue-900 justify-between items-center text-blue-400 font-primary font-semibold text-sm px-3 rounded hover:opacity-75 active:opacity-65 duration-300 disabled:opacity-60"
-                  onClick={close}
-                >
-                  <span>At my own risk. Banzai!</span>
-                  <Skull size={18} weight="bold" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </Drawer.Content>
-      </Drawer.Portal>
-    </Drawer.Root>
+          <span>{t("AndroidHomeModal.buttons.risk")}</span>
+          <Skull size={18} weight="bold" />
+        </button>
+      </div>
+    </ModalLayout>
   );
 };

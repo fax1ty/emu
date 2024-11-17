@@ -1,0 +1,27 @@
+{
+  "MainLayout": { "title": "Device Manager" },
+  "AndroidHomeModal": {
+    "title": "ANDROID_HOME is missing",
+    "text": "At this stage, we are unable to automatically locate the necessary libraries. We would like to use your Android Studio installation, but we are unable to find the specified environment variable.\n\nYou can find a brief description of the variable on the<1>Android Developer Platform</1>. Or you can try searching for help on <2>Stack Overflow</2>.",
+    "warning": "Error: {{error}}",
+    "buttons": { "exit": "Play safe. Exit", "risk": "At my own risk. Banzai!" }
+  },
+  "EmulatorOptionsModal": {
+    "coldBoot": "Cold Boot"
+  },
+  "List": {
+    "create": "Create",
+    "createTitle": "Will be available in future versions"
+  },
+  "EmulatorListItem": {
+    "buttons": {
+      "run": "Run",
+      "stop": "Stop"
+    },
+    "statuses": {
+      "online": "Online",
+      "offline": "Offline",
+      "booting": "Booting"
+    }
+  }
+}
