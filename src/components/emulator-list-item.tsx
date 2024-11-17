@@ -1,13 +1,5 @@
-import { cn } from "@/lib/utils";
-import { startEmulator, stopEmulator } from "@/services/api/emulator";
-import {
-  Emulator,
-  EmulatorState,
-  OnlineEmulator,
-  OnlineEmulatorState,
-  OnlineEmulatorType,
-} from "@/types/emulator";
-import { isOnlineEmulator } from "@/types/guards/emulator";
+import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import {
   AndroidLogo,
   DeviceMobileCamera,
@@ -21,58 +13,80 @@ import {
 } from "@phosphor-icons/react";
 import { mutate } from "swr";
 
-const getStatusAlt = (state: EmulatorState | OnlineEmulatorState) => {
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { startEmulator, stopEmulator } from "@/services/api/emulator";
+import { useModalsStore } from "@/stores/modals";
+import { Emulator, EmulatorState, EmulatorType } from "@/types/emulator";
+
+const getStatusAlt = (state: EmulatorState) => {
   switch (state) {
     case "online":
-      return "Online";
+      return "EmulatorListItem.statuses.online";
     case "offline":
-      return "Offline";
+      return "EmulatorListItem.statuses.offline";
     case "booting":
-      return "Booting";
+      return "EmulatorListItem.statuses.booting";
   }
 };
 
-const getTypeIcon = (
-  state: EmulatorState | OnlineEmulatorState,
-  type: OnlineEmulatorType | false
-) => {
-  if (state === "offline") return DeviceMobileSlash;
-  if (state === "booting") return DeviceRotate;
+const getTypeIcon = (state: EmulatorState, type?: EmulatorType) => {
+  if (!type) {
+    if (state === "offline") return DeviceMobileSlash;
+    if (state === "booting") return DeviceRotate;
+  }
+
   if (type === "watch") return Watch;
   if (type === "tv") return TelevisionSimple;
+
   return DeviceMobileCamera;
 };
 
-const getStateIcon = (state: EmulatorState | OnlineEmulatorState) => {
+const getStateIcon = (state: EmulatorState) => {
   if (state === "offline") return Play;
   return Stop;
 };
 
 interface EmulatorListItemProps {
-  emulator: Emulator | OnlineEmulator;
-  onOptionsButtonPressed?: React.MouseEventHandler<HTMLButtonElement>;
+  emulator: Emulator;
 }
 
-export const EmulatorListItem = ({
-  emulator,
-  onOptionsButtonPressed,
-}: EmulatorListItemProps) => {
+export const EmulatorListItem = ({ emulator }: EmulatorListItemProps) => {
+  const { t } = useTranslation();
+
   const toggleEmulatorState = async () => {
-    if (!isOnlineEmulator(emulator)) {
+    if (emulator.state === "offline") {
       await startEmulator(emulator.name);
       await mutate("emulators");
     } else {
+      if (!emulator.id) return;
       await stopEmulator(emulator.id);
       await mutate("emulators");
     }
   };
 
-  const EmulatorTypeIcon = getTypeIcon(
-    emulator.state,
-    isOnlineEmulator(emulator) && emulator.type
+  const setEmulatorOptionsModalVisible = useModalsStore(
+    (state) => state.setEmulatorOptionsModalVisible
+  );
+  const setEmulatorOptionsName = useModalsStore(
+    (state) => state.setEmulatorOptionsName
   );
 
-  const EmulatorStateIcon = getStateIcon(emulator.state);
+  const EmulatorTypeIcon = useMemo(
+    () => getTypeIcon(emulator.state, emulator.type),
+    [emulator.state, emulator.type]
+  );
+
+  const EmulatorStateIcon = useMemo(
+    () => getStateIcon(emulator.state),
+    [emulator.state]
+  );
+
+  const onOptionsButtonPressed = () => {
+    setEmulatorOptionsName(emulator.name);
+    setEmulatorOptionsModalVisible(true);
+  };
 
   return (
     <li className="flex items-center gap-3">
@@ -81,43 +95,42 @@ export const EmulatorListItem = ({
           emulator.state === "offline" && "bg-red-400",
           emulator.state === "booting" && "bg-amber-400",
           emulator.state === "online" && "bg-teal-400",
-          "w-12 h-9 rounded-md flex items-center justify-center text-mauve-50"
+          "flex h-9 w-12 items-center justify-center rounded-md text-mauve-50"
         )}
-        title={getStatusAlt(emulator.state)}
+        title={t(getStatusAlt(emulator.state))}
       >
         <EmulatorTypeIcon size={16} weight="fill" />
       </div>
 
-      <div className="flex flex-col gap-1 flex-1 min-w-0 items-start">
-        <p className="text-xxs text-mauve-50 font-secondary font-medium truncate w-full">
+      <div className="flex min-w-0 flex-1 flex-col items-start gap-1">
+        <p
+          className="w-full truncate font-secondary text-xxs font-medium text-mauve-50"
+          title={emulator.name}
+        >
           {emulator.name}
         </p>
 
-        {isOnlineEmulator(emulator) && (
-          <div className="bg-cyan-800 flex items-center rounded px-1 py-0.5 gap-1 text-cyan-200">
+        {emulator.version && (
+          <Badge intent="success">
             <AndroidLogo size={14} weight="fill" />
-            <p className="text-xxs font-primary font-semibold">
-              Android {emulator.version}
-            </p>
-          </div>
+            <p>Android {emulator.version}</p>
+          </Badge>
         )}
       </div>
 
       <div className="flex gap-2.5">
-        <button
-          className="px-4 bg-blue-900 text-blue-400 items-center flex rounded font-primary text-xs font-semibold h-8 gap-1.5 hover:opacity-75 active:opacity-65 duration-300"
-          onClick={toggleEmulatorState}
-        >
-          <span>{emulator.state === "offline" ? "Run" : "Stop"}</span>
+        <Button onClick={toggleEmulatorState} size="small">
+          <span>
+            {emulator.state === "offline"
+              ? t("EmulatorListItem.buttons.run")
+              : t("EmulatorListItem.buttons.stop")}
+          </span>
           <EmulatorStateIcon size={14} weight="fill" />
-        </button>
+        </Button>
 
-        <button
-          className="bg-blue-400 text-blue-900 items-center justify-center flex rounded h-8 w-8 hover:opacity-75 active:opacity-65 duration-300"
-          onClick={onOptionsButtonPressed}
-        >
+        <Button onClick={onOptionsButtonPressed} size="icon">
           <DotsThreeOutlineVertical size={14} weight="fill" />
-        </button>
+        </Button>
       </div>
     </li>
   );

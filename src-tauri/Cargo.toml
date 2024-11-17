@@ -1,6 +1,6 @@
 [package]
 name = "emu"
-version = "0.2.0"
+version = "0.2.1"
 description = "Manage emulators with ease"
 authors = ["fax1ty"]
 edition = "2021"

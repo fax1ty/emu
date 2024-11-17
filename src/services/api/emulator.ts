@@ -1,9 +1,5 @@
 import { adb, emulator } from "@/services/execute";
-import {
-  OnlineEmulator,
-  OnlineEmulatorState,
-  OnlineEmulatorType,
-} from "@/types/emulator";
+import { Emulator, EmulatorState, EmulatorType } from "@/types/emulator";
 
 export const getAllEmulators = async () => {
   const output = await emulator("-list-avds");
@@ -24,7 +20,7 @@ export const getEmulatorName = async (id: string) => {
 
 export const getEmulatorState = (
   props: Record<string, string>
-): OnlineEmulatorState => {
+): EmulatorState => {
   if (props["init.svc.bootanim"] === "stopped") return "online";
   return "booting";
 };
@@ -43,7 +39,7 @@ export const getEmulatorFeatures = async (id: string) => {
   return output.split("\n");
 };
 
-export const getEmulatorType = (features: string[]): OnlineEmulatorType => {
+export const getEmulatorType = (features: string[]): EmulatorType => {
   if (features.includes("feature:android.hardware.type.television"))
     return "tv";
   if (features.includes("feature:android.hardware.type.watch")) return "watch";
@@ -61,7 +57,7 @@ export const getOnlineEmulators = async () => {
       return true;
     });
 
-  const emulators: Record<string, OnlineEmulator> = {};
+  const emulators: Record<string, Emulator> = {};
 
   for (const row of rows) {
     const kv = row.split(/\s/gm).map((v, i) => {

@@ -1,9 +1,10 @@
-import useSWR from "swr";
-import { Emulator, OnlineEmulator } from "@/types/emulator";
-import { getAllEmulators, getOnlineEmulators } from "@/services/api/emulator";
 import { invoke } from "@tauri-apps/api/core";
-import { useModalsStore } from "@/stores/modals";
+import useSWR, { useSWRConfig } from "swr";
+
+import { getAllEmulators, getOnlineEmulators } from "@/services/api/emulator";
 import { useAppStore } from "@/stores/app";
+import { useModalsStore } from "@/stores/modals";
+import { Emulator } from "@/types/emulator";
 
 export const useEmulators = () => {
   const setAndroidHomeModalVisible = useModalsStore(
@@ -12,6 +13,8 @@ export const useEmulators = () => {
   const setAndroidHomeModalError = useModalsStore(
     (state) => state.setAndroidHomeModalError
   );
+
+  const { cache } = useSWRConfig();
 
   return useSWR("emulators", async () => {
     try {
@@ -27,15 +30,22 @@ export const useEmulators = () => {
       return null;
     }
 
+    const cached = cache.get("emulators");
+
     const online = await getOnlineEmulators();
 
     const all = await getAllEmulators();
 
-    const emulators: Record<string, Emulator | OnlineEmulator> = {};
+    const emulators: Record<string, Emulator> = {};
 
     for (const name of all) {
+      const cachedEmulator = cached?.data?.[name] as Emulator;
       const onlineEmulator = online[name];
-      emulators[name] = onlineEmulator || { name, state: "offline" };
+      emulators[name] = onlineEmulator || {
+        ...cachedEmulator,
+        name,
+        state: "offline",
+      };
     }
 
     return emulators;
