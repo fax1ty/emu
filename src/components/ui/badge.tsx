@@ -4,6 +4,7 @@ const badge = cva("flex items-center rounded px-1", {
   variants: {
     intent: {
       success: ["bg-cyan-800 text-cyan-200"],
+      info: ["bg-blue-800 text-blue-200"],
     },
     size: {
       small: ["gap-1 py-0.5 font-primary text-xxs font-semibold"],

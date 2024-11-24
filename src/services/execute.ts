@@ -54,3 +54,7 @@ export const adb = (command: string) => {
   const prefix = getAndroidHomePrefix();
   return execute(`${prefix}/platform-tools/adb`, command);
 };
+
+export const simctl = (command: string) => {
+  return execute("xcrun simctl", command);
+};

@@ -6,8 +6,9 @@
     "warning": "Error: {{error}}",
     "buttons": { "exit": "Play safe. Exit", "risk": "At my own risk. Banzai!" }
   },
-  "EmulatorOptionsModal": {
-    "coldBoot": "Cold Boot"
+  "DeviceOptionsModal": {
+    "coldBoot": "Cold Boot",
+    "coldBootNotApplicable": "Not applicable to this operating system"
   },
   "List": {
     "create": "Create",

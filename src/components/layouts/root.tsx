@@ -4,7 +4,7 @@ import { platform } from "@tauri-apps/plugin-os";
 
 import { AhoyModal } from "@/components/modals/ahoy";
 import { AndroidHomeModal } from "@/components/modals/android-home";
-import { EmulatorOptionsModal } from "@/components/modals/emulator-options";
+import { DeivceOptionsModal } from "@/components/modals/device-options";
 import { cn } from "@/lib/utils";
 
 export const RootLayout = () => {
@@ -21,7 +21,7 @@ export const RootLayout = () => {
       <Outlet />
 
       <AndroidHomeModal />
-      <EmulatorOptionsModal />
+      <DeivceOptionsModal />
       <AhoyModal />
     </div>
   );

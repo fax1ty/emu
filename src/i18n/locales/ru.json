@@ -9,8 +9,9 @@
       "risk": "На свой страх и риск. Банзай!"
     }
   },
-  "EmulatorOptionsModal": {
-    "coldBoot": "Холодный запуск"
+  "DeviceOptionsModal": {
+    "coldBoot": "Холодный запуск",
+    "coldBootNotApplicable": "Не применимо для данной платформы"
   },
   "List": {
     "create": "Создать",
