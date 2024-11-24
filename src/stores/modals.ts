@@ -11,6 +11,8 @@ interface ModalsStore {
   setDeviceOptionsModalVisible: (v: boolean) => void;
   deviceOptionsInfo: Device | null;
   setDeviceOptionsInfo: (v: Device | null) => void;
+  isAhoyModalVisisble: boolean;
+  setAhoyModalVisisble: (v: boolean) => void;
 }
 
 export const useModalsStore = create<ModalsStore>((set) => ({
@@ -22,4 +24,6 @@ export const useModalsStore = create<ModalsStore>((set) => ({
   setDeviceOptionsModalVisible: (v) => set({ isDeviceOptionsModalVisible: v }),
   deviceOptionsInfo: null,
   setDeviceOptionsInfo: (v) => set({ deviceOptionsInfo: v }),
+  isAhoyModalVisisble: false,
+  setAhoyModalVisisble: (v) => set({ isAhoyModalVisisble: v }),
 }));

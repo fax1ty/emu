@@ -10,6 +10,13 @@
     "coldBoot": "Cold Boot",
     "coldBootNotApplicable": "Not applicable to this operating system"
   },
+  "AhoyModal": {
+    "title": "Ahoy, Captain",
+    "text": "This system potentially can handle multiple platforms. You can safely disable platforms that you don't need or that are not currently available on your device.",
+    "emulators": "Android Emulators",
+    "simulators": "Apple Simulators",
+    "save": "Save"
+  },
   "List": {
     "create": "Create",
     "createTitle": "Will be available in future versions"

@@ -7,17 +7,31 @@ import { useModalsStore } from "@/stores/modals";
 import { Device } from "@/types/device";
 
 export const useEmulators = () => {
+  const isAndroidHomeModalVisible = useModalsStore(
+    (state) => state.isAndroidHomeModalVisible
+  );
   const setAndroidHomeModalVisible = useModalsStore(
     (state) => state.setAndroidHomeModalVisible
   );
   const setAndroidHomeModalError = useModalsStore(
     (state) => state.setAndroidHomeModalError
   );
+  const isEmulatorSupportEnabled = useAppStore(
+    (state) => state.isEmulatorSupportEnabled
+  );
+  const isInitialSettingsDone = useAppStore(
+    (state) => state.isInitialSettingsDone
+  );
+
+  const disabled =
+    isAndroidHomeModalVisible ||
+    !isInitialSettingsDone ||
+    !isEmulatorSupportEnabled;
 
   const { cache } = useSWRConfig();
 
   return useSWR(
-    "emulators",
+    disabled ? null : "emulators",
     async () => {
       try {
         await invoke<string>("get_android_home");
@@ -48,6 +62,7 @@ export const useEmulators = () => {
           ...cachedEmulator,
           name,
           state: "offline",
+          os: "android",
         };
       }
 
