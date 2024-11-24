@@ -6,8 +6,16 @@
     "warning": "Error: {{error}}",
     "buttons": { "exit": "Play safe. Exit", "risk": "At my own risk. Banzai!" }
   },
-  "EmulatorOptionsModal": {
-    "coldBoot": "Cold Boot"
+  "DeviceOptionsModal": {
+    "coldBoot": "Cold Boot",
+    "coldBootNotApplicable": "Not applicable to this operating system"
+  },
+  "AhoyModal": {
+    "title": "Ahoy, Captain",
+    "text": "This system potentially can handle multiple platforms. You can safely disable platforms that you don't need or that are not currently available on your device.",
+    "emulators": "Android Emulators",
+    "simulators": "Apple Simulators",
+    "save": "Save"
   },
   "List": {
     "create": "Create",
