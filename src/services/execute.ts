@@ -59,6 +59,16 @@ export const simctl = (command: string) => {
   return execute("xcrun simctl", command);
 };
 
-export const printenv = (command: string) => {
-  return execute("printenv", command);
+export const printenv = async (name: string) => {
+  const currentPlatfrom = platform();
+
+  switch (currentPlatfrom) {
+    case "windows":
+      const variable = await execute("echo", `%${name}%`);
+      if (variable === `%${name}%`) throw new Error("Variable is not found");
+      return variable;
+
+    default:
+      return execute("printenv", name);
+  }
 };
