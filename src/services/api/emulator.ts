@@ -1,4 +1,4 @@
-import { adb, emulator } from "@/services/execute";
+import { adb, emulator, printenv } from "@/services/execute";
 import { Device, DeviceState, DeviceType } from "@/types/device";
 
 export const getAllEmulators = async () => {
@@ -103,4 +103,8 @@ export const startEmulator = async (name: string, cold = false) => {
 
 export const stopEmulator = async (id: string) => {
   await adb(`-s ${id} emu kill`);
+};
+
+export const getAndroidHome = () => {
+  return printenv("ANDROID_HOME");
 };

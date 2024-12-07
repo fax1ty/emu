@@ -1,7 +1,10 @@
-import { invoke } from "@tauri-apps/api/core";
 import useSWR, { useSWRConfig } from "swr";
 
-import { getAllEmulators, getOnlineEmulators } from "@/services/api/emulator";
+import {
+  getAllEmulators,
+  getAndroidHome,
+  getOnlineEmulators,
+} from "@/services/api/emulator";
 import { useAppStore } from "@/stores/app";
 import { useModalsStore } from "@/stores/modals";
 import { Device } from "@/types/device";
@@ -34,7 +37,7 @@ export const useEmulators = () => {
     disabled ? null : "emulators",
     async () => {
       try {
-        await invoke<string>("get_android_home");
+        await getAndroidHome();
       } catch (error) {
         const { isDangerModeEnabled } = useAppStore.getState();
         if (!isDangerModeEnabled) setAndroidHomeModalVisible(true);
