@@ -58,3 +58,7 @@ export const adb = (command: string) => {
 export const simctl = (command: string) => {
   return execute("xcrun simctl", command);
 };
+
+export const printenv = (command: string) => {
+  return execute("printenv", command);
+};

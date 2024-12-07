@@ -28,7 +28,7 @@ export const DeivceOptionsModal = () => {
     if (!deviceOptionsInfo) return;
 
     setDeviceOptionsModalVisible(false);
-    await startEmulator(deviceOptionsInfo.name);
+    await startEmulator(deviceOptionsInfo.name, true);
   };
 
   const onClose = () => {

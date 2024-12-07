@@ -9,12 +9,6 @@ use tauri::{
 };
 use tauri_plugin_positioner::{Position, WindowExt};
 
-#[tauri::command]
-fn get_android_home() -> Result<String, String> {
-    let v = env::var("ANDROID_HOME").map_err(|err| err.to_string())?;
-    Ok(v)
-}
-
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -27,7 +21,6 @@ pub fn run() {
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_shell::init())
-        .invoke_handler(tauri::generate_handler![get_android_home])
         .setup(|app| {
             let aligned = Arc::new(Mutex::new(false));
 
